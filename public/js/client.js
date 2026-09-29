@@ -7,8 +7,8 @@ let fileInput = document.querySelector("#file-input");
 let uploadBtn = document.querySelector("#upload-btn");
 let feedback = document.querySelector("#feedback");
 
-let messageTone = new Audio("/music/message-tone.mp3");
-let greetingAudio = new Audio("/music/greeting.mp3");
+let messageTone = new Audio("/audio/message-tone.mp3");
+let greetingAudio = new Audio("/audio/greeting.mp3");
 let toast = document.querySelector("#toast");
 let toastTimeout;
 let hasConnected = false;
