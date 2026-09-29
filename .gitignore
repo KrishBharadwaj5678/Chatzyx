@@ -1,0 +1,39 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Production / Build outputs
+/dist
+/build
+/out
+
+# Testing
+/coverage
+
+# Local environment variables (NEVER commit these!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+漏.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / IDE configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db

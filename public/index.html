@@ -1,363 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="../favicon/favicon.svg" />
-  <link rel="shortcut icon" href="../favicon/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content="iChat" />
-  <link rel="manifest" href="../favicon/site.webmanifest" />
-  <title>Chatzyx</title>
-  <style>
-    /* Custom Scrollbar Styling */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/tailwind.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
+    <link rel="shortcut icon" href="./favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./favicon/apple-touch-icon.png"
+    />
+    <meta name="apple-mobile-web-app-title" content="iChat" />
+    <link rel="manifest" href="./favicon/site.webmanifest" />
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div
+        class="toast text-sm md:text-lg"
+        id="toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      ></div>
 
-    ::-webkit-scrollbar-track {
-      background: #2d3748; /* Dark background for the track */
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: #4a5568; /* Grey color for the thumb */
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: #2b2b2b; /* Darker grey on hover */
-    }
-
-    /* Toast Notification Styles */
-    .toast {
-      position: fixed;
-      top: 20px;          /* Position it at the top */
-      right: 20px;        /* Position it to the right */
-      background-color: #e53e3e;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      opacity: 0;
-      display: none;      /* Initially hidden */
-    }
-
-    /* Show the toast */
-    .toast.show {
-      display: block;
-      opacity: 1;
-    }
-
-    /* Message Alignment */
-    .message-left {
-      justify-content: flex-start;
-      overflow: hidden;            
-    }
-
-    .message-right {
-      justify-content: flex-end;
-      overflow: hidden;  
-    }
-
-    /* Add space on the right side for messages that belong to the user */
-    .message-right .bg-green-600 {
-      margin-left: auto; /* Push the message to the right */
-    }
-
-    /* Add space on the left side for messages that belong to others */
-    .message-left .bg-gray-700 {
-      background-color: #2D3748; /* Adjust the color for other user messages */
-      margin-right: auto; /* Push the message to the left */
-    }
-
-  </style>
-</head>
-<body class="bg-gray-900 flex justify-center items-center h-screen p-4">
-
-  <!-- Toast Notification -->
-  <div class="toast text-sm md:text-lg" id="toast"></div>
-
-  <!-- Chat Container -->
-  <div class="w-full max-w-lg bg-gray-800 rounded-lg shadow-lg overflow-hidden opacity-0" id="chat-container">
-
-    <!-- Header -->
-    <div class="bg-gray-700 text-white py-3 px-5 flex items-center justify-between">
-      <h1 class="text-xl font-semibold">Chatzyx 💬</h1>
-      <span class="text-sm opacity-80" id="clients-total">Active Users: 2</span>
-    </div>
-
-    <!-- User Input -->
-    <div class="flex items-center gap-3 bg-gray-750 px-4 py-3 border-b border-gray-700">
-      <i class="far fa-user text-gray-400 text-lg"></i>
-      <input type="text" id="name-input" class="flex-1 bg-transparent text-white placeholder-gray-400 outline-none" value="anonymous" maxlength="20">
-    </div>
-
-    <!-- Messages Container -->
-    <div class="h-96 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800" id="message-container">
-      <!-- Left Chat, Right Chat, Feedback -->
-    </div>
-
-    <!-- Message Input -->
-    <form class="flex items-center bg-gray-700 px-4 py-3 border-t border-gray-600" id="message-form">
-      <!-- Text Input on the left -->
-      <input type="text" id="message-input" class="flex-1 bg-transparent text-white placeholder-gray-400 outline-none md:py-2 md:px-3 py-0 px-0 text-md message" placeholder="Type a message">
-
-      <!-- File Upload Button -->
-      <input type="file" id="file-input" accept="image/*,video/*,audio/*,.pdf" class="bg-transparent text-white placeholder-gray-400 outline-none py-2 px-3" style="display:none;">
-
-        <!-- Upload Button -->
-      <button type="button" id="upload-btn" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg shadow upload-btn flex items-center ml-3 text-sm md:text-md">
-        <i class="fas fa-upload md:mr-2 text-lg md:text-md"></i> 
-        <span class="hidden md:inline">Upload</span>
-      </button>
-
-      <!-- Send Button -->
-      <button type="submit" class="ml-3 bg-blue-500 hover:bg-blue-600 text-white md:px-4 md:py-2 px-3 py-2 rounded-lg shadow  items-center send-btn text-sm md:text-md hidden sm:flex" >
-        <i class="fas fa-paper-plane md:mr-2 text-lg md:text-md"></i> 
-        <span class="hidden md:inline">Send</span>
-      </button>
-
-    </form>
-
-  </div>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
-
-  <script>
-    let totalClients = document.querySelector("#clients-total");
-    let messageContainer = document.querySelector("#message-container");
-    let nameInput = document.querySelector("#name-input");
-    let messageForm = document.querySelector("#message-form");
-    let messageInput = document.querySelector("#message-input");
-    let fileInput = document.querySelector("#file-input");
-    let uploadBtn = document.querySelector("#upload-btn");
-    let feedback = document.querySelector("#feedback");
-
-    let messageTone = new Audio("/message-tone.mp3");
-    let toast = document.querySelector("#toast");
-
-    // Chat Container Fade-In Animation
-    gsap.to("#chat-container", { opacity: 1, duration: 1, ease: "power2.out" });
-
-    // Send Button Scale Animation on Hover
-    document.querySelector(".send-btn").addEventListener("mouseenter", function () {
-      gsap.to(".send-btn", { scale: 1.03, duration: 0.2 });
-    });
-
-    document.querySelector(".send-btn").addEventListener("mouseleave", function () {
-      gsap.to(".send-btn", { scale: 1, duration: 0.2 });
-    });
-
-    let socket = io();
-    let username = nameInput.value;
-
-    // Emit username to server when changed
-    nameInput.addEventListener("input", () => {
-      username = nameInput.value || 'anonymous'; // Ensure it's never empty
-      socket.emit('set-username', username);
-    });
-
-    messageForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (messageInput.value.length > 0) {
-        sendMessage();
-      }
-    });
-
-    // Send message
-    function sendMessage() {
-      let data = {
-        name: username,
-        message: messageInput.value,
-        date: new Date().toISOString(),
-      };
-      socket.emit("message", data);
-      addMessageToUI(true, data, "bg-blue-500");
-      messageInput.value = "";
-    }
-
-    // Other clients message
-    socket.on("chat-message", (data) => {
-      addMessageToUI(false, data, "bg-gray-700");
-      messageTone.play();
-    });
-
-    // Handle Chat UI
-    function addMessageToUI(isOwnMessage, data, colorCode) {
-      clearFeedback();
-      let element = '';
-      
-      if (data.fileUrl) {
-        // Check the file type
-        if (data.fileType.includes('image')) {
-          element = 
-            `<div class="flex items-start space-x-2 ${isOwnMessage ? "message-right" : "message-left"}">
-              <div class="${colorCode} text-white px-4 py-2 rounded-xl max-w-[75%]">
-                <p>${data.message}</p>
-                <img src="${data.fileUrl}" alt="Image" class="max-w-full rounded-xl mt-2 cursor-pointer" onclick="downloadFile('${data.fileUrl}')">
-                <span class="text-xs opacity-75" id="message-time-${data.date}">
-                  ${data.name} • ${moment(data.date).format("h:mm A")}
-                </span>
-              </div>
-            </div>`;
-        } else if (data.fileType.includes('video')) {
-        element = 
-          `<div class="flex items-start space-x-2 ${isOwnMessage ? "message-right" : "message-left"}">
-            <div class="${colorCode} text-white px-4 py-2 rounded-xl max-w-[75%]">
-              <p>${data.message}</p>
-              <video controls class="max-w-full rounded-xl mt-2">
-                <source src="${data.fileUrl}" type="${data.fileType}">
-                Your browser does not support the video tag.
-              </video>
-              <span class="text-xs opacity-75" id="message-time-${data.date}">
-                ${data.name} • ${moment(data.date).format("h:mm A")}
-              </span>
+      <div class="chat-panel opacity-0" id="chat-container">
+        <header class="chat-header">
+          <div class="brand-group">
+            <img
+              class="brand-mark"
+              src="./favicon/favicon.ico"
+              alt="Chatzyx logo"
+              width="42"
+              height="42"
+            />
+            <div class="brand-copy">
+              <span class="eyebrow">Team chat</span>
+              <h1>Chatzyx</h1>
             </div>
-          </div>`;
-     }else if (data.fileType.includes('pdf')) {
-          element = 
-            `<div class="flex items-start space-x-2 ${isOwnMessage ? "message-right" : "message-left"}">
-              <div class="${colorCode} text-white px-4 py-2 rounded-xl max-w-[75%]">
-                <p>${data.message}</p>
-                <iframe src="${data.fileUrl}" class="w-full h-72 mt-2 rounded-xl" frameborder="0"></iframe>
-                <span class="text-xs opacity-75" id="message-time-${data.date}">
-                  ${data.name} • ${moment(data.date).format("h:mm A")}
-                </span>
-              </div>
-            </div>`;
-        }
-      } else {
-        // Regular text message
-        element = 
-          `<div class="flex items-start space-x-2 ${isOwnMessage ? "message-right" : "message-left"}">
-            <div class="${colorCode} text-white px-4 py-2 rounded-xl max-w-[75%]">
-              <p>${data.message}</p>
-              <span class="text-xs opacity-75" id="message-time-${data.date}">
-                ${data.name} • ${moment(data.date).format("h:mm A")}
-              </span>
-            </div>
-          </div>`;
-      }
+          </div>
 
-      messageContainer.innerHTML += element;
-      scrollToBottom();
-    }
+          <div
+            class="status-pill"
+            title="Active users online"
+            aria-label="Active users online"
+          >
+            <span class="status-dot"></span>
+            <span id="clients-total">Active Users: 2</span>
+          </div>
+        </header>
 
-    // It will make the UI scroll to bottom itself
-    function scrollToBottom() {
-      messageContainer.scrollTo({
-        top: messageContainer.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+        <div class="name-row">
+          <i class="far fa-user user-icon"></i>
+          <input
+            type="text"
+            id="name-input"
+            class="name-input"
+            aria-label="Your display name"
+            value="anonymous"
+            maxlength="20"
+          />
+        </div>
 
-    // User focus on input
-    messageInput.addEventListener("focus", () => {
-      socket.emit("feedback", {
-        feedback: `✒️ ${username} is typing a message`,
-      });
-    });
+        <div
+          class="message-container"
+          id="message-container"
+          role="log"
+          aria-label="Chat messages"
+          tabindex="0"
+        ></div>
 
-    // User is typing
-    messageInput.addEventListener("keypress", () => {
-      socket.emit("feedback", {
-        feedback: `✒️ ${username} is typing a message`,
-      });
-    });
+        <form
+          class="composer"
+          id="message-form"
+          aria-label="Send a chat message"
+        >
+          <input
+            type="text"
+            id="message-input"
+            class="message-input"
+            aria-label="Message"
+            placeholder="Type a message"
+            enterkeyhint="send"
+          />
 
-    // User is not typing/focus
-    messageInput.addEventListener("blur", () => {
-      socket.emit("feedback", {
-        feedback: "",
-      });
-    });
+          <input
+            type="file"
+            id="file-input"
+            accept="image/*,video/*,audio/*,.pdf"
+            class="hidden-input"
+          />
 
-    // Handling total clients
-    socket.on("clients-total", (data) => {
-      totalClients.textContent = `Active Users: ${data}`;
-    });
+          <button
+            type="button"
+            id="upload-btn"
+            class="action-button upload-btn"
+            data-tooltip="Upload file"
+            aria-label="Upload file"
+            title="Upload file"
+          >
+            <i class="fas fa-upload"></i>
+            <span>Upload</span>
+          </button>
 
-    // If typing then show
-    socket.on("feedback", (data) => {
-      clearFeedback();
-      let feedback = `<div class="text-sm text-gray-400 italic message" id="feedback">${data.feedback}</div>`;
-      messageContainer.innerHTML += feedback;
-    });
+          <button
+            type="submit"
+            class="action-button send-btn"
+            data-tooltip="Send message"
+            aria-label="Send message"
+            title="Send message"
+          >
+            <i class="fas fa-paper-plane"></i>
+            <span>Send</span>
+          </button>
+        </form>
+      </div>
+    </div>
 
-    // Clear the typing feedback
-    function clearFeedback() {
-      document.querySelectorAll("#feedback").forEach((element) => {
-        element.parentNode.removeChild(element);
-      });
-    }
-
-    // Handle user disconnect
-    socket.on("user-disconnected", (disconnectedUsername) => {
-      const toast = document.getElementById("toast");
-      toast.textContent = `${disconnectedUsername} disconnected`; // Message to show
-      gsap.to(toast, { opacity: 1, duration: 0.5, display: 'block', y: 3, ease: "power2.out" }); // Animate toast
-      
-      // Hide the toast after 3 seconds with an animation
-      setTimeout(() => {
-        gsap.to(toast, { opacity: 0, duration: 0.5, y: -10, ease: "power2.in", onComplete: () => {
-          toast.style.display = "none"; // Hide toast completely after animation
-        }});  
-      }, 3000);
-    });
-
-    // Open file input when the upload button is clicked
-    uploadBtn.addEventListener("click", () => {
-      fileInput.click();  // This will open the file selection dialog
-    });
-
-    fileInput.addEventListener("change", function () {
-    const file = fileInput.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      fetch("/upload", {
-        method: "POST",
-        body: formData,
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          const fileData = {
-            name: username,
-            message: "",  // No text message, just the file
-            fileUrl: data.fileUrl,
-            fileType: data.fileType,
-            date: new Date().toISOString(),
-          };
-
-          // Emit the file upload to the server
-          socket.emit("message", fileData);
-
-          // Display the file in the UI for the current user
-          addMessageToUI(true, fileData, "bg-gray-700"); // 'true' indicates it's the current user's message
-        }
-      })
-      .catch(error => {
-        console.error("File upload failed:", error);
-      });
-   }
-  });
-
-    // Download the file when the user clicks on image/video/audio/pdf
-    function downloadFile(fileUrl) {
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = fileUrl.split('/').pop();  // Extract file name for download
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  </script>
-
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="./js/client.js" defer></script>
+  </body>
 </html>

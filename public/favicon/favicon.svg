@@ -1,0 +1,30 @@
+﻿<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="24" y1="16" x2="216" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7DD3FC"/>
+      <stop offset="0.45" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="bubble" x1="66" y1="66" x2="186" y2="186" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(188 62) rotate(126.649) scale(128.74 145.12)">
+      <stop stop-color="#BFDBFE" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#BFDBFE" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="8" y="8" width="240" height="240" rx="68" fill="url(#bg)"/>
+  <circle cx="188" cy="64" r="80" fill="url(#glow)"/>
+
+  <path d="M77 80C77 62.3269 91.3269 48 109 48H147C164.673 48 179 62.3269 179 80V123C179 140.673 164.673 155 147 155H120L90 184C86.6254 187.153 81.3526 184.624 81.3526 180.038L81.2228 155H109C91.3269 155 77 140.673 77 123V80Z" fill="url(#bubble)"/>
+  <circle cx="113" cy="100" r="10" fill="#60A5FA"/>
+  <circle cx="141" cy="100" r="10" fill="#60A5FA"/>
+  <circle cx="169" cy="100" r="10" fill="#60A5FA"/>
+  <path d="M96 142H160" stroke="#94A3B8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+
+  <circle cx="186" cy="70" r="24" fill="#112D6D" fill-opacity="0.82"/>
+  <path d="M176 70H196" stroke="#E0F2FE" stroke-width="8" stroke-linecap="round"/>
+  <path d="M186 60V80" stroke="#E0F2FE" stroke-width="8" stroke-linecap="round"/>
+</svg>
